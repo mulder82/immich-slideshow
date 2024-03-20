@@ -21,8 +21,8 @@ Custom card for Home Assistant's UI LoveLace which will display images slideshow
 
 Parameter name | Required | Default value | Description
 --- | --- | ---- | ---
-host | YES | - | xxx
-apikey | YES | - | xxx
+host | YES | - | URL to immich server
+apikey | YES | - | Immich apiKey
 slideshow_interval | NO | 6 | Time (in seconds) after new image is loaded
 height| NO | auto | Card height (eg. 500px)
 
