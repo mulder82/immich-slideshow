@@ -1,2 +1,3 @@
 # immich-slideshow
-Immich slideshow custom card for Home Assistant
+Custom card for Home Assistant's UI LoveLace which will display images slideshow from Immich server.
+
