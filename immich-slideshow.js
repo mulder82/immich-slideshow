@@ -1,4 +1,4 @@
-var ImmichSlideshowVersion = "1.0.0";
+var ImmichSlideshowVersion = "1.1.0";
 var PlaceholderSrc = "/local/immich-slideshow/placeholder.png";
 
 import {
@@ -20,8 +20,8 @@ class ImmichSlideshow extends LitElement {
     return html`
      <ha-card style="overflow:hidden;">
       <div class="wrapper" style="height:${this.config.height}">
-       <img class="bottom" src="${PlaceholderSrc}" alt="immich-slideshow">
-       <img class="top hidden" @transitionend="${this._onTransitionEnd}" src="${PlaceholderSrc}" alt="immich-slideshow">
+       <img class="bottom" @load="${this._onBottomLoad}" src="${PlaceholderSrc}" alt="immich-slideshow">
+       <img class="top hidden" @transitionend="${this._onTopTransitionEnd}" src="${PlaceholderSrc}" alt="immich-slideshow">
       </div>
      </ha-card>
     `;
@@ -35,7 +35,14 @@ class ImmichSlideshow extends LitElement {
     return this.renderRoot.querySelector(".wrapper img." + className);
   }
 
-  _onTransitionEnd(e) {
+  _onBottomLoad(e) {
+    var bottom = this._getImg("bottom");
+    if (!bottom.src.endsWith(PlaceholderSrc)) {
+      URL.revokeObjectURL(bottom.src);
+    }
+  }
+
+  _onTopTransitionEnd(e) {
     var top = this._getImg("top");
     var bottom = this._getImg("bottom");
     bottom.src = top.src;
@@ -48,10 +55,12 @@ class ImmichSlideshow extends LitElement {
       clearTimeout(this._slideshow);
       this._slideshow = null;
     }
+
     this._nextImage();
+
     this._slideshow = setTimeout(() => {
-      this._doSlideshow();
       this._slideshow = null;
+      this._doSlideshow();
     }, this.config.slideshow_interval * 1000);
   }
 
@@ -76,14 +85,6 @@ class ImmichSlideshow extends LitElement {
     if (!isconfig.slideshow_interval || isconfig.slideshow_interval < 6)
       isconfig.slideshow_interval = 6;
 
-    //console.groupCollapsed("immich-slideshow setting (usunąć to jak już będzie wszystko ok)");
-    //console.log("apikey:"+isconfig.apikey);
-    //console.log("host:"+isconfig.host);
-    //console.log("height:"+isconfig.height);
-    //console.log("slideshow_interval:"+isconfig.slideshow_interval);
-    //console.log("--------------------------");
-    //console.log("PrevConfig:"+this.config);
-    //console.groupEnd();
     this.config = isconfig;
   }
 
