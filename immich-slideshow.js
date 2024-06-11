@@ -1,4 +1,4 @@
-var ImmichSlideshowVersion = "1.2.0";
+var ImmichSlideshowVersion = "1.2.1";
 var PlaceholderSrc = "/local/immich-slideshow/placeholder.png";
 
 import {
@@ -127,14 +127,14 @@ class ImmichSlideshow extends LitElement {
   }
 
   async _getRandomID() {
-    return this._apiGet("asset/random")
+    return this._apiGet("assets/random")
       .then(response => response.json())
       .then(json => json[0].id);
   }
 
   async _getNextImageURL() {
     var id = await this._getRandomID();
-    return this._apiGet("asset/thumbnail/" + id + "?format=JPEG").
+    return this._apiGet("assets/" + id + "/thumbnail?size=thumbnail").
       then(response => response.blob()).
       then(blob => URL.createObjectURL(blob));
   }
