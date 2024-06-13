@@ -1,4 +1,4 @@
-var ImmichSlideshowVersion = "1.2.1";
+var ImmichSlideshowVersion = "1.2.2";
 var PlaceholderSrc = "/local/immich-slideshow/placeholder.png";
 
 import {
@@ -134,7 +134,7 @@ class ImmichSlideshow extends LitElement {
 
   async _getNextImageURL() {
     var id = await this._getRandomID();
-    return this._apiGet("assets/" + id + "/thumbnail?size=thumbnail").
+    return this._apiGet("assets/" + id + "/thumbnail?size=preview").
       then(response => response.blob()).
       then(blob => URL.createObjectURL(blob));
   }
