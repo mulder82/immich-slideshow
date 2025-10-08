@@ -1,11 +1,14 @@
-var ImmichSlideshowVersion = "1.2.2";
+var ImmichSlideshowVersion = "1.3.0";
 var PlaceholderSrc = "/local/immich-slideshow/placeholder.png";
 
 import {
   LitElement,
   html,
   css,
-} from "https://unpkg.com/lit-element@2.0.1/lit-element.js?module";
+} from "https://cdn.jsdelivr.net/gh/lit/dist@3/core/lit-core.min.js"; 
+//Ta ścieżka poniżej czasem nie działała (była do powyższego importu)
+//"https://unpkg.com/lit-element@2.0.1/lit-element.js?module";
+
 
 class ImmichSlideshow extends LitElement {
 
@@ -43,17 +46,19 @@ class ImmichSlideshow extends LitElement {
   }
 
   _imgErrorCount = 0;
+  _maxImgErrorCount = 10;
+
   _onTopError(e) {
     this._imgErrorCount++;
-    if (this._imgErrorCount <= 3) {
-      console.log("Immich-Slideshow -> Image load error, loading new image.");
+    if (this._imgErrorCount <= this._maxImgErrorCount) {
+      this._log(`Emergency image reloading, attempt ${this._imgErrorCount} of ${this._maxImgErrorCount}.`);
       var top = this._getImg("top");
       URL.revokeObjectURL(top.src);
       top.classList.replace("visible", "hidden");
-      this._nextImage();
+      setTimeout(()=>{this._nextImage()},500);
     }
     else {
-      console.log("Immich-Slideshow -> Image load error #" + this._imgErrorCount);
+      this._log(`Emergency, reloading image, maximum number of attempts reached (${this._maxImgErrorCount}).`);
     }
   }
 
@@ -111,32 +116,52 @@ class ImmichSlideshow extends LitElement {
     return 1;
   }
 
-  async _apiGet(url) {
+  //--------------------------------------------------------------------------------------------------
+  //Immich Server API CALLS
+
+  async _apiCall(url,method="GET",body=null)
+  {
     let call_url = new URL("api/" + url, this.config.host);
     //console.log("apiCall => "+call_url);
     let requestOptions =
     {
-      method: 'GET',
+      method: method,
       credentials: 'include',
       headers:
       {
         'X-Api-Key': `${this.config.apikey}`
       }
     };
+
+    if(body!=null)
+    {
+      requestOptions.body=JSON.stringify(body);
+    }
+
     return fetch(call_url, requestOptions);
   }
 
   async _getRandomID() {
-    return this._apiGet("assets/random")
+    let reqbody={type:"IMAGE",size:1};
+
+    return this._apiCall("search/random","POST",reqbody)
       .then(response => response.json())
       .then(json => json[0].id);
   }
 
   async _getNextImageURL() {
     var id = await this._getRandomID();
-    return this._apiGet("assets/" + id + "/thumbnail?size=preview").
+    return this._apiCall("assets/"+ id +"/thumbnail?size=fullsize").
       then(response => response.blob()).
       then(blob => URL.createObjectURL(blob));
+  }
+
+  //--------------------------------------------------------------------------------------------------
+  //Common functions
+
+  _log(message)
+  {
+    console.log(`Immich-Slideshow -> ${message}`);
   }
 
   static get styles() {
@@ -166,18 +191,21 @@ class ImmichSlideshow extends LitElement {
     img.visible {
      transition: all 5s ease-in;
      opacity: 1;
+     filter: grayscale(0%);
     }
 
     img.hidden {
      transition: none;
      opacity: 0;
+     filter: grayscale(100%);
     }`;
   }
-}
+}//End of ImmichSlideshow class
 
 customElements.define("immich-slideshow", ImmichSlideshow);
 
-//INFO----------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
+//INFO
 let infoStyles = [
   "color: #fff",
   "background-color: #444"
