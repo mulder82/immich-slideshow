@@ -17,7 +17,7 @@ Custom card for Home Assistant's UI LoveLace which will display images slideshow
 ![Screenshot](https://github.com/mulder82/immich-slideshow/raw/master/screenshots/apikey.jpg)
 
 # HomeAssistant configuration
-1. Login into HomeAssistant server and add new custom card to the dashboard with the fallowing configuration parameters:
+1. Login into HomeAssistant server and add new custom card to the dashboard with the following configuration parameters:
 
 Parameter name | Required | Default value | Description
 --- | --- | ---- | ---
