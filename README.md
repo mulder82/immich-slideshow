@@ -41,3 +41,9 @@ start "C:\Program Files\Google\Chrome\Application\" chrome.exe --allow-running-i
 ```
 > [!TIP]
 > Replace PATH_TO_PROFILE_DIRECORY and DASHBOARD_URL with valid values.
+
+
+
+
+
+[![buycoffee](https://buycoffee.to/static/img/share/share-button-primary.png)](https://buycoffee.to/mulder82)
