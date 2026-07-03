@@ -150,7 +150,7 @@ class ImmichSlideshow extends LitElement {
 
   async _getNextImageURL() {
     var id = await this._getRandomID();
-    return this._apiCall("assets/"+ id +"/thumbnail?size=fullsize").
+    return this._apiCall("assets/"+ id +"/thumbnail?size=preview").
       then(response => response.blob()).
       then(blob => URL.createObjectURL(blob));
   }
