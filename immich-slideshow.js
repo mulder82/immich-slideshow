@@ -1,4 +1,4 @@
-var ImmichSlideshowVersion = "1.3.0";
+var ImmichSlideshowVersion = "1.4.0";
 var PlaceholderSrc = "/local/immich-slideshow/placeholder.png";
 
 import {
@@ -6,9 +6,6 @@ import {
   html,
   css,
 } from "https://cdn.jsdelivr.net/gh/lit/dist@3/core/lit-core.min.js"; 
-//Ta ścieżka poniżej czasem nie działała (była do powyższego importu)
-//"https://unpkg.com/lit-element@2.0.1/lit-element.js?module";
-
 
 class ImmichSlideshow extends LitElement {
 
@@ -122,23 +119,25 @@ class ImmichSlideshow extends LitElement {
   async _apiCall(url,method="GET",body=null)
   {
     let call_url = new URL("api/" + url, this.config.host);
-    //console.log("apiCall => "+call_url);
-    let requestOptions =
+    
+    const reqHaders = new Headers();
+    reqHaders.append("Content-Type", "application/json");
+    reqHaders.append('X-Api-Key', this.config.apikey);
+
+    let reqOptions =
     {
       method: method,
       credentials: 'include',
-      headers:
-      {
-        'X-Api-Key': `${this.config.apikey}`
-      }
+      headers: reqHaders
     };
 
     if(body!=null)
     {
-      requestOptions.body=JSON.stringify(body);
+      reqOptions.body = JSON.stringify(body);
     }
 
-    return fetch(call_url, requestOptions);
+    //console.log("apiCall => "+call_url);
+    return fetch(call_url, reqOptions);
   }
 
   async _getRandomID() {
