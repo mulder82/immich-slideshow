@@ -1,3 +1,5 @@
 {
-  "name": "Immich Slideshow"
+  "name": "Immich Slideshow",
+  "filename": "immich-slideshow.js",
+  "hide_default_branch": true
 }
